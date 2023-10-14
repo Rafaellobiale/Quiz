@@ -1,0 +1,73 @@
+{% extends 'dependencies.html' %} {% block content %}
+<div class="container">
+    <h1>Mein Konto</h1>
+
+    <!--Showing sucess reports-->
+    {% if messages %}
+    <div class="alert alert-success"
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+        <h2>Passwort ändern</h2>
+        <form method="post" id="password-form">
+            {% csrf_token %} {{ password_form.non_field_errors }}
+            <div class="form-group">
+                <label for="{{ password_form.old_password.id_for_label }}"
+                    >Altes Passwort:</label
+                >
+                {{ password_form.old_password }} {{
+                password_form.old_password.errors }}
+            </div>
+            <div class="form-group">
+                <label for="{{ password_form.new_password1.id_for_label }}"
+                    >Neues Passwort:</label
+                >
+                {{ password_form.new_password1 }} {{
+                password_form.new_password1.errors }}
+            </div>
+            <div class="form-group">
+                <label for="{{ password_form.new_password2.id_for_label }}"
+                    >Passwort bestätigen:</label
+                >
+                {{ password_form.new_password2 }} {{
+                password_form.new_password2.errors }}
+            </div>
+            <button type="submit" class="btn btn-primary">
+                Passwort ändern
+            </button>
+        </form>
+
+        <h2>Add a note</h2>
+        <form method="post" id="note-form">
+            {% csrf_token %} {{ note_form.non_field_errors }}
+            <div class="form-group">
+                <label for="{{ note_form.content.id_for_label }}">Notiz:</label>
+                {{ note_form.content }} {{ note_form.content.errors }}
+            </div>
+            <button type="submit" class="btn btn-primary">
+                Add a note
+            </button>
+        </form>
+
+        <h2>My notes</h2>
+        <ul>
+            {% for note in notes %}
+            <li>{{ note.content }}</li>
+            {% endfor %}
+        </ul>
+        <h2>Bevorzugte Sprache</h2>
+            <form method="post" id="language-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ user_profile_form.preferred_language.id_for_label }}">Preffered language:</label>
+                    {{ user_profile_form.preferred_language }}
+                </div>
+                <button type="submit" class="btn btn-primary">Speichern</button>
+            </form>
+
+</div>
+{% endblock %}

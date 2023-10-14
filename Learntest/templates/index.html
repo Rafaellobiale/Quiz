@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Startseite</title>
+    <!-- Bootstrap CSS einbinden -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+                font-family: "Lato", sans-serif;
+                background-color: rgba(179, 241, 245, 0.5);
+                margin: 0;
+                font-size: 16px;
+            }
+        /* CSS für die Vergrößerung der Schriftgröße bei Hover */
+
+
+        body:hover {
+            font-size: 18px; /* Ändern Sie die Schriftgröße nach Bedarf */
+        }
+
+        /* CSS für die zentrierte Anzeige der Uhr */
+        .clock {
+            position: absolute;
+            top: 90%; /* Ändern Sie den Wert, um die Uhr nach unten zu verschieben */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 44px; /* Ändern Sie die Schriftgröße nach Bedarf */
+        }
+        .header{
+            text-align: center;
+            padding: 20px;
+        }
+        .link-to-list {
+            margin-left: 20px;
+        }
+
+        /* Stil für die grauen rechteckigen Felder */
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1cm; /* Einen Zentimeter Abstand nach oben */
+        }
+
+        .button-container .button {
+            flex: 1;
+            background-color: #ccc;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+            margin-right: 1cm; /* Einen Zentimeter Abstand zwischen den Schaltflächen */
+        }
+
+        /* Stil für den Text innerhalb der Schaltflächen */
+        .button a {
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+    {% include 'navbar.html' %}
+    <!-- Heading of homepage Kopfbereich der Startseite -->
+    <header class="header">
+        <h1>Úvodní stránka -Main Page- Startseite</h1>
+
+        {% if not user.is_authenticated %}
+        <div class="button-container">
+            <div class="button">
+                <a href="{% url 'register' %}">Register</a>
+            </div>
+            <div class="button">
+                <a href="{% url 'login' %}">Login</a>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+        <div class="button-container">
+            <div class="button">
+                <a href="{% url 'logout' %}">Logout</a>
+            </div>
+        </div>
+        {% endif %}
+
+    </header>
+    <!-- Link zur Seite, auf der die Elemente hinzugefügt werden -->
+    <a href="/mylist/" class="link-to-list">Řízení otázek- To question management - Zur Frageverwaltung</a>
+
+
+    <!-- Uhranzeige mit JavaScript -->
+    <div class="clock" id="clock"></div>
+
+
+    <script>
+        // JavaScript, um die Uhrzeit anzuzeigen
+        function updateClock() {
+            const clockElement = document.getElementById("clock");
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, "0");
+            const minutes = now.getMinutes().toString().padStart(2, "0");
+            const seconds = now.getSeconds().toString().padStart(2, "0");
+            const date = now.toDateString();
+            clockElement.textContent = `${hours}:${minutes}:${seconds} - ${date}`;
+        }
+
+        // Aktualisieren Sie die Uhr jede Sekunde
+        setInterval(updateClock, 1000);
+
+        // Initial die Uhrzeit anzeigen
+        updateClock();
+    </script>
+
+
+</body>
+</html>

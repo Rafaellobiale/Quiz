@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Question</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Question</h1>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            <!-- Common field for all question types -->
+            <div class="form-group">
+                <label for="{{ form.question_text.id_for_label }}">Question:</label>
+                {{ form.question_text }}
+            </div>
+
+            {% if question_type == "text" %}
+            <!-- Fields for editing a Text question -->
+            {{ form.answer_text.errors }}
+            <div class="form-group">
+                <label for="{{ form.answer_text.id_for_label }}">Answer:</label>
+                {{ form.answer_text }}
+            </div>
+            {% elif question_type == "single" %}
+            <!-- Fields for editing a Single-Choice question -->
+            {{ form.language_name.errors }}
+            {{ form.options.errors }}
+            <div class="form-group">
+                <label for="{{ form.language_name.id_for_label }}">Language Name:</label>
+                {{ form.language_name }}
+            </div>
+            <div class="form-group">
+                <label>Options:</label><br>
+                {{ form.options }}
+            </div>
+            {% elif question_type == "multi" %}
+            <!-- Fields for editing a Multi-Choice question -->
+            {{ form.language_name.errors }}
+            <div class="form-group">
+                <label for="{{ form.language_name.id_for_label }}">Language Name:</label>
+                {{ form.language_name }}
+            </div>
+            <!-- Add fields for editing answer options, correct options, etc. -->
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+
+        <a href="{% url 'question_manager' %}">Back to Question Manager</a>
+    </div>
+</body>
+</html>

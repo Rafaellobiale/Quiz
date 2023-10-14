@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Question Manager</title>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+        <style>
+        body {
+                font-family: "Lato", sans-serif;
+                background-color: rgba(179, 241, 245, 0.5);
+                margin: 0;
+                font-size: 16px;
+            }
+        </style>
+
+        </head>
+
+    <body>
+        {% include 'navbar.html' %}
+
+        <header>
+
+            <h1 style="margin-right: 90px;">Questions' management</h1> <!-- Verschiebe "Questions" nach rechts -->
+
+        </header>
+<!-- Edition of questions -->
+        <div class="container">
+            <h2>Multiple Choice Questions</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for question in questions.multi_questions %}
+                    <tr>
+                        <td>{{ question.question }}</td>
+                        <td>
+                            <a href="{% url 'edit_single_question' question.id %}" class="btn btn-primary">Edit</a>
+                            <a href="{% url 'edit_question' question_type='multi' pk=question.pk %}" class="btn btn-primary">Edit</a>
+                            <a href="{% url 'delete_multi_question' question.id %}" class="btn btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="container">
+            <h2>Single Choice Questions</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+{#                    {% for question in single_choice_questions %}#}
+                    {% for question in questions.single_choice_questions %}
+                    <tr>
+                        <td>{{ question.question_text }}</td>
+                        <td>
+                            <a href="{% url 'edit_single_question' question.id %}" class="btn btn-primary">Edit</a>
+                            <a href="{% url 'edit_question' question_type='single' pk=question.pk %}">Edit Bearbeiten</a>
+                            <a href="{% url 'delete_single_question' question.id %}" class="btn btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="container">
+            <h2>Text Questions</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for question in text_questions %}
+{#                    {% for question in questions.text_questions %}#}
+                    <tr>
+                        <td>{{ question.question_text }}</td>
+                        <td>
+                            <a href="{% url 'edit_text_question' question.id %}" class="btn btn-primary">Edit</a>
+                            <a href="{% url 'edit_question' question_type='text' pk=question.pk %}" class="btn btn-primary">EditBearbeiten</a>
+                            <a href="{% url 'delete_text_question' question.id %}" class="btn btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+<!-- Edition of questions -->
+    </body>
+</html>
+
+

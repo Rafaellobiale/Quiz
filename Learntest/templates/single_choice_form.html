@@ -1,0 +1,53 @@
+{% extends 'dependencies.html' %}
+
+{% block content %}
+<h2>Create Single Choice Question</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    {{ form.question_text.label_tag }} {{ form.question_text }}
+    {{ form.language_name.label_tag }} {{ form.language_name }}
+    {{ form.question_type.label_tag }} {{ form.question_type }}
+
+    <div id="answers-container">
+        <label>Options:</label>
+        <ul id="options-list">
+            {% for field in form.options %}
+                <li>
+                    {{ field.choice_label }}
+                    <input type="text" name="option_{{ forloop.counter }}" maxlength="200">
+                    <input type="radio" name="correct_option" value="{{ forloop.counter }}" required>  <!-- "required" ensures that one option must be chosen -->
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <input type="submit" value="Submit">
+</form>
+
+<script>
+    const answersContainer = document.getElementById("answers-container");
+    const optionsList = document.getElementById("options-list");
+
+    const options = document.querySelectorAll('input[type="radio"][name="correct_option"]');
+
+    options.forEach((option, index) => {
+        option.addEventListener("change", function () {
+            // Aktivieren Sie das zugehörige Textfeld, wenn die Option ausgewählt ist
+            const textField = optionsList.querySelector(`input[type="text"][name="option_${index + 1}"]`);
+            textField.disabled = !this.checked;
+
+            // Deaktivieren Sie alle anderen Textfelder
+            optionsList.querySelectorAll('input[type="text"]').forEach((otherTextField, otherIndex) => {
+                if (otherIndex !== index) {
+                    otherTextField.disabled = false;
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}
+
+{#    {{ form.as_p }} form as p was removed #}

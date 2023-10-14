@@ -1,0 +1,90 @@
+{% extends 'dependencies.html' %}
+
+{% block content %}
+
+    <div class="jumbotron container row">
+    <div class="col-md-6">
+        <h1>Add Question</h1>
+        <div class="card card-body">
+            <form action="" method="POST" id="multi-question-form">  <!-- Check whether at least one answer has been provided -->
+                {% csrf_token %}
+                {{ form.question.label_tag }} {{ form.question }}
+                <br>
+                {{ form.question.label_tag }} {{ form.language_name }}
+                <br>
+                {{ form.question.label_tag }} {{ form.question_type }}
+                <br>
+                <label for="id_ans_count">Number of Answers Anzahl der Antworten:</label>
+                {{ form.ans_count }}
+                <br>
+                <div id="answers-container">
+                    {% for i in form.visible_fields %}
+                        {% if 'answer_' in i.name or 'is_correct_' in i.name %}
+                            {{ i.label_tag }} {{ i }}
+                            <br>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <input type="submit" name="Submit">
+            </form>
+        </div>
+    </div>
+</div>
+
+    <script>
+        // JavaScript to dynamically add responses and ensure validation
+        // JavaScript, um dynamisch Antworten hinzuzufügen und Valiedierung sicherzustellen
+        const ansCountInput = document.getElementById("id_ans_count");
+        const answersContainer = document.getElementById("answers-container");
+        const form = document.getElementById("multi-question-form"); // Element from formulaire is fetched
+
+        ansCountInput.addEventListener("change", function () {
+            const ansCount = parseInt(this.value);
+            answersContainer.innerHTML = "";  // To empty Container-Div
+
+            for (let i = 0; i < ansCount; i++) {
+                const answerField = document.createElement("div");
+                answerField.innerHTML = `
+                    <label for="id_answer_${i}">Answer ${i+1}:</label>
+                    <input type="text" id="id_answer_${i}" name="answer_${i}" maxlength="200" required>
+                    <label for="id_is_correct_${i}">Is Correct:</label>
+                    <input type="checkbox" id="id_is_correct_${i}" name="is_correct_${i}">
+                    <br>
+                `;
+                answersContainer.appendChild(answerField);
+            }
+        });
+        // Adding an event listener for submitting the form
+        // Hinzufügen einer Event-Listener für das Absenden des Formulars
+        form.addEventListener("submit", function (event) {
+            const selectedCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="is_correct_"]:checked');
+            if (selectedCheckboxes.length === 0) {
+                alert("Please at least one answer Bitte eine richtige Antwort aus.");
+                event.preventDefault(); // Prevents  the form from being submitted. Verhindert das Absenden des Formulars
+            }
+        });
+    </script>
+
+    <!-- Uhranzeige mit JavaScript -->
+    <div class="clock" id="clock"></div>
+
+    <script>
+        // JavaScript, um die Uhrzeit anzuzeigen
+        function updateClock() {
+            const clockElement = document.getElementById("clock");
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, "0");
+            const minutes = now.getMinutes().toString().padStart(2, "0");
+            const seconds = now.getSeconds().toString().padStart(2, "0");
+            const date = now.toDateString();
+            clockElement.textContent = `${hours}:${minutes}:${seconds} - ${date}`;
+        }
+
+        // Aktualisieren Sie die Uhr jede Sekunde
+        setInterval(updateClock, 1000);
+
+        // Initial die Uhrzeit anzeigen
+        updateClock();
+    </script>
+
+{% endblock %}

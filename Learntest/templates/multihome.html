@@ -1,0 +1,140 @@
+{% extends 'dependencies.html' %}
+
+{% block content %}
+{% load static %}
+<div class="container">
+    <h1>Welcome to Quiz</h1>
+
+    <div align="right" id="displaytimer"><b>Timer: 0 seconds</b></div>
+
+    <form method='post' action=''>
+        {% csrf_token %}
+        {% for question in questions %}
+        <div class="form-group">
+            <label for="question">{{ question.question_text }}</label>
+            <p>Language name: {{ question.language_name.language_name }}</p>
+            <p>Question type: {{ question.question_type.question_type }}</p>
+{#            <p>Language: {{ question.language_name.language_name }}</p>  <!-- Note that we access both the Category object and the language_name field of the Category object on language_name. -->#}
+        </div>
+        <div class="form-check">
+            {% if question.question_type == 'Multi Question' %}
+                {% for option in question.multiquesmodel_set.all %}
+{#                    Inroduction of quiz boxes #}
+                    <hr>
+                    <form id="quiz-form" class="mt-3 mb-3">
+                        {% csrf_token %}
+                        <div id="quiz-box"></div>
+                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                    </form>
+
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="question_{{ question.id }}"
+                               id="option_{{ option.id }}" value="{{ option.id }}">
+                        <label class="form-check-label" for="option_{{ option.id }}">
+                            {{ option.option_text }}
+                        </label>
+                    </div>
+                {% endfor %}
+                {% for option in question.questionanswer_set.all %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="question_{{ question.id }}"
+                               id="option_{{ option.id }}" value="{{ option.id }}">
+                        <label class="form-check-label" for="option_{{ option.id }}">
+                            {{ option.option_text }}
+                        </label>
+                    </div>
+
+                {% endfor %}
+                {% for option in question.answer_set.all %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="question_{{ question.id }}"
+                               id="option_{{ option.id }}" value="{{ option.id }}">
+                        <label class="form-check-label" for="option_{{ option.id }}">
+                            {{ option.option_text }}
+                        </label>
+                    </div>
+
+                {% endfor %}
+
+            {% elif question.question_type == 'Single Question' %}
+                {% for option in question.singlechoiceoption_set.all %}
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="question_{{ question.id }}"
+                               id="option_{{ option.id }}" value="{{ option.id }}">
+                        <label class="form-check-label" for="option_{{ option.id }}">
+                            {{ option.option_text }}
+                        </label>
+                    </div>
+                {% endfor %}
+            {% elif question.question_type == 'Text Question' %}
+
+                <textarea class="form-control" rows="4" name="question_{{ question.id }}"></textarea>
+            {% endif %}
+            <br>
+        </div>
+        {% endfor %}
+        <input id='timer' type='hidden' name="timer" value="">
+        <br>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    {% block script %}
+        <script>
+        console.log('hello world quiz')
+        const url = window.location.href
+        console.log(url)
+
+        const quizBox = document.getElementByID('quiz-box')
+
+        $.ajax({
+            type: 'GET',
+            url: `${url}`,
+            success: function (response) {
+                console.log(response)
+                const data = response.data
+                data.forEach(el =>{
+                    for (const [question, answers] of Object.entries(el)){
+                        console.log(question)
+                        console.log(ans)
+                        quizBox.innerHTML += `
+                            <hr>
+                            <div class="mb-2">
+                                <b>${question}</b>
+                            </div>
+
+                        `
+                        answers.forEach(answer => {
+                            quizBox.innerHTML += `
+                                <div>
+                                    <input type="radio" class="ans" id="${question}-${answer}" name="${question} calue="${answer}">
+                                    <label for="${question}">${answer}</label>  <!-- Displays options for each question --?
+                                </div>
+                            `
+
+                        })
+                    }
+
+                });
+
+            },
+            error: function(error){
+                console.log(error)
+            }
+        })
+        </script>
+    <script>
+        const timer = document.getElementById('displaytimer');
+        const inputtag = document.getElementById('timer');
+        let t = 0;
+
+        setInterval(() => {
+            t += 1;
+            timer.innerHTML = "<b>Timer: " + t + " seconds</b>";
+            inputtag.value = t;
+        }, 1000);
+    </script>
+    {% endblock script %}
+</div>
+{% endblock %}
